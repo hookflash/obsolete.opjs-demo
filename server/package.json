@@ -1,0 +1,15 @@
+{
+    "name": "opjs-demo-server",
+    "version": "0.0.0",
+    "private": true,
+    "pm": "npm",
+    "main": "server.js",
+    "dependencies": {
+        "send": "~0.1.0",
+        "sendgrid": "~0.2.7",
+    	"webrtc-shim": "~0.1.1"
+    },
+    "scripts": {
+    	"start": "node ."
+    }
+}
