@@ -1,6 +1,6 @@
 
 install:
-	@cd server; npm install
+	cd server; npm install
 
 run:
 	@cd server; npm start
