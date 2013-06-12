@@ -1,4 +1,3 @@
-/*jshint node: true */
 
 var https = require('https');
 var http = require('http');
