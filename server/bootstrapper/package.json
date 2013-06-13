@@ -1,0 +1,9 @@
+{
+    "name": "opjs-demo-server-bootstrapper",
+    "version": "0.0.0",
+    "pm": "npm",
+    "private": true,
+    "dependencies": {
+        "request": "~2.21.0"
+    }
+}

@@ -8,8 +8,8 @@ require.config({
         text: 'lib/text',
         templates: '../templates',
         db: 'lib/ydn.db',
-        rolodex: "http://webrtc.hookflash.me/.openpeer-rolodex/client",
-        "rolodex-presence": "http://webrtc.hookflash.me/.openpeer-rolodex-presence/client"
+        rolodex: "%ROLODEX_BASE_URL%/.openpeer-rolodex/client",
+        "rolodex-presence": "%ROLODEX_BASE_URL%/.openpeer-rolodex-presence/client"
     },
     shim: {
         transport: {

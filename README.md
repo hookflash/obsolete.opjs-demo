@@ -30,7 +30,7 @@ Configure `config.local.json` (see *Configuration* below).
 
 Run:
 
-	make run
+    make run
 
 Test:
 
@@ -63,15 +63,26 @@ Configure `config.json` (see *Configuration* below).
 Configuration
 =============
 
-	{
-		"sendgrid": {
-			"username": "<sendgrid.com API username>",
-			"password": "<sendgrid.com API password>"
-		},
-		"rolodex": {
-			// See 'Configuration' at https://github.com/openpeer/rolodex
-		}
-	}
+    {
+        "options": {
+            "hostname": "localhost",
+            "REAL_IDENTITY_HOST": "provisioning-stable-dev.hookflash.me",
+            "ROLODEX_BASE_URL": "http://localhost:8080",
+            "IDENTITY_DOMAIN": "unstable.hookflash.me",
+            "IDENTITY_HOST": "http://localhost:8080"
+        },
+        "papertrail": {  // Optional
+            "host": "logs.papertrailapp.com",
+            "port": <port>
+        },
+        "sendgrid": {  // Optional
+            "username": "<sendgrid.com API username>",
+            "password": "<sendgrid.com API password>"
+        },
+        "rolodex": {
+            // See 'Configuration' at https://github.com/openpeer/rolodex
+        }
+    }
 
 *NOTE: The [rolodex](https://github.com/openpeer/rolodex) configuration is included in the config above
 instead of placing it into its own file.*

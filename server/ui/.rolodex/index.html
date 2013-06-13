@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style-presence.css">
+	    <script src="jquery.js"></script>
+        <script src="require.js"></script>
+	    <script>
+            require.config({
+                paths: {
+                    "rolodex": "/.openpeer-rolodex/client",
+                    "rolodex-presence": "/.openpeer-rolodex-presence/client"
+                }
+            });
+            require(["app"]);
+        </script>
+    </head>
+    <body>
+        <div id="status"></div>
+        <div id="federated" align="center">
+            <div class="online-contacts"></div>
+        </div>
+    	<div id="services" class="services" align="center"></div>
+        <div id="service-auth" class="service-auth hidden">
+        	<button class="login">Login to {name}</button>
+        </div>
+        <div id="service" class="service hidden">
+        	Loaded {fetched} of {total} ({percent}%) contacts from {name} <button class="refetch">Refetch</button> <button class="logout">Logout</button>
+            <div class="error hidden"></div>
+        </div>
+        <div id="online-contact" class="online-contact hidden">
+            <div class="name">{name}</div>
+            <div class="status"></div>
+            <div class="messages"></div>
+            <textarea class="send"></textarea>
+        </div>
+        <div id="loggedout" class="loggedout hidden">
+            Logged out
+        </div>
+    </body>
+</html>

@@ -1,0 +1,83 @@
+
+#status {
+	padding: 10px;
+	margin: 10px;
+	border: 1px solid #000000;
+	background-color: #ececec;
+	font-size: 20px;
+	font-weight: bold;
+	color: purple;
+	text-align: center;
+}
+
+#federated {
+	width: 100%;
+	margin-top: 50px;
+}
+
+#federated > DIV.online-contacts {
+	width: 80%;
+	padding: 30px;
+	margin: 10px;
+	border: 1px solid #000000;
+	background-color: #ececec;
+	font-size: 20px;
+}
+
+DIV.service > DIV.online-contacts {
+	margin-top: 10px;
+	padding: 10px;
+}
+
+DIV.online-contact {
+	margin-top: 10px;
+	text-align: left;
+}
+
+DIV.online-contact > DIV.name {
+	display: inline-block;
+	padding-left: 10px;
+	vertical-align: top;
+	height: 100px;
+}
+
+DIV.online-contact > DIV.status {	
+	display: inline-block;
+	padding-left: 10px;
+	font-weight: bold;
+	color: purple;
+	vertical-align: top;
+	height: 100px;
+}
+
+DIV.online-contact > DIV.messages {	
+	display: inline-block;
+	margin-left: 10px;
+	border: 1px solid #000000;
+	width: 300px;
+	height: 100px;
+	overflow-y: scroll;
+}
+DIV.online-contact > DIV.messages > DIV {
+	font-size: 10px;
+	padding: 3px;
+	margin-top: 0px;
+	font-weight: bold;
+}
+DIV.online-contact > DIV.messages > DIV.sent {
+	color: #8c8c8c;
+	text-align: right;
+}
+
+DIV.online-contact > TEXTAREA.send {
+	display: inline-block;
+	margin-left: 10px;
+	width: 200px;
+	height: 50px;
+}
+
+DIV.loggedout {
+	text-align: center;
+	font-size: 20px;
+	margin: 50px;
+}

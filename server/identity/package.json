@@ -1,0 +1,6 @@
+{
+    "name": "opjs-demo-server-identity",
+    "version": "0.0.0",
+    "pm": "npm",
+    "private": true
+}

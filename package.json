@@ -7,21 +7,5 @@
         "type": "git",
         "url": "git://github.com/openpeer/opjs-demo.git"
     },
-    "pm": "npm",
-    "main": "server.js",
-    "dependencies": {
-        "send": "~0.1.0",
-        "sendgrid": "~0.2.7",
-        "webrtc-shim": "~0.1.1"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-jshint": "~0.3.0",
-        "grunt-requirejs": "~0.3.3",
-        "grunt-mocha": "~0.3.0"
-    },
-    "scripts": {
-        "start": "node .",
-        "test": "grunt test"
-    }
+    "pm": "npm"
 }
