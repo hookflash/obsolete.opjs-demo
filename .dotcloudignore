@@ -1,6 +1,8 @@
 /.git/
 /.sm/
 /client/node_modules/
+/server/node_modules/openpeer-rolodex/node_modules/
+/server/node_modules/openpeer-rolodex-presence/node_modules/
 /server/node_modules/openpeer/dev/node_modules/
 /server/node_modules/openpeer/dev/helpers/.identities/
 /server/node_modules/openpeer/helpers/.lockboxes/
