@@ -184,7 +184,7 @@ define([
         rolodex.getServices().then(function(services){
             var serviceCollection = new Collection(null, { transport: transport });
 
-            for(serviceID in services){
+            for(var serviceID in services){
                 if(services[serviceID].loggedin){
 
                     services[serviceID].hCard['provider'] = serviceID;
@@ -222,7 +222,7 @@ define([
 
                 var deferred = Q.defer();
 
-                rolodex.getContacts(null, {peerContact: /^peer:.*/}).then(function(contacts){
+                rolodex.getContacts(null, {peerContact: /^peer:.*/}).then(function(contacts) {
                     var records = [];
                     for(var i in contacts){
                         for(var j in contacts[i]){
