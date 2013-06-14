@@ -2,6 +2,7 @@
 postinstall:
 	@if [ -d "/home/dotcloud/current" ]; then $(MAKE) postinstall-dotcloud; fi
 	cd bootstrapper; npm install --production
+	cd node_modules/openpeer; npm install
 	cd node_modules/openpeer/dev/helpers/finder-server; npm install --production
 
 postinstall-dotcloud:
