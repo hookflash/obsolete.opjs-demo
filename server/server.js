@@ -38,6 +38,12 @@ exports.main = function(callback) {
 
         var config = JSON.parse(FS.readFileSync(PATH.join(__dirname, "../config" + ((mode==="dev")?".local":"") + ".json")));
 
+        if (mode === "live") {
+            config.options.REQUIREJS_MAIN_MODULE = "dist/app";
+        } else {
+            config.options.REQUIREJS_MAIN_MODULE = "app";
+        }
+
         function initLogger() {
             var transports = [
                 new WINSTON.transports.Console({

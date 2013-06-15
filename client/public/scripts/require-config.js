@@ -1,5 +1,5 @@
 require.config({
-    deps: ['app'],
+    deps: ['%REQUIREJS_MAIN_MODULE%'],
     paths: {
         jquery: 'lib/jquery',
         _: 'lib/lodash',

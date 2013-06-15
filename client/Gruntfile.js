@@ -50,24 +50,45 @@ module.exports = function(grunt) {
     requirejs: {
       compile: {
         options: {
-          almond: true,
-          mainConfigFile: 'public/scripts/require-config.js',
-          out: 'public/scripts/dist/op.js',
-          name: 'app'
+          paths: {
+            "rolodex": "empty:",
+            "rolodex-presence": "empty:"
+          },
+          almond: false,
+          mainConfigFile: "public/scripts/require-config.js",
+          deps: [],
+//          optimize: "none",
+          preserveLicenseComments: false,
+          optimize: "uglify2",
+          generateSourceMaps: true,
+          out: "public/scripts/dist/app.js",
+          exclude: [
+            "config"
+          ],
+          name: "app",
+          logLevel: 0,
+          onBuildWrite: function (moduleName, path, contents) {            
+            if (moduleName === "app") {
+              contents = contents.replace(/^define\('app',/, "define(");
+            }
+            return contents;
+          }
         }
       }
+/*
     },
     mocha: {
       index: ['test/client/index.html']
+*/
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-requirejs');
-  grunt.loadNpmTasks('grunt-mocha');
+//  grunt.loadNpmTasks('grunt-mocha');
 
-  grunt.registerTask('test', ['mocha']);
-  grunt.registerTask('default', ['jshint', 'test']);
-  grunt.registerTask('dist', ['default', 'requirejs']);
+//  grunt.registerTask('test', ['mocha']);
+  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('dist', ['requirejs']);
 
 };
