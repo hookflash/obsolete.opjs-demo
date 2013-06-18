@@ -6,9 +6,8 @@ run:
 	@cd server; npm start
 
 test:
-	@echo "Tests are currently not functional!"
-#	@$(MAKE) ensure-grunt
-#	@cd client; npm test
+	@$(MAKE) ensure-grunt
+	@cd client; npm test
 
 dist:
 	@$(MAKE) ensure-grunt

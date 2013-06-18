@@ -1,3 +1,6 @@
+
+const SERVER = require("../server/server");
+
 module.exports = function(grunt) {
 
   'use strict';
@@ -75,19 +78,60 @@ module.exports = function(grunt) {
           }
         }
       }
+    },
+    'saucelabs-mocha': {
+        all: {
+            options: {
+                urls: ["http://127.0.0.1:8080/index.html"],
+                tunnelTimeout: 5,
+                build: process.env.TRAVIS_JOB_ID || "manual-local",
+                concurrency: 2,
+                browsers: [
+                  {
+                    browserName: "chrome",
+                    platform: "linux"
+                  }
+                ],
+                testname: "client tests",
+                tags: [ process.env.TRAVIS_BRANCH || "local" ]
+            }
+        }
+    }
 /*
     },
     mocha: {
       index: ['test/client/index.html']
 */
-    }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-requirejs');
-//  grunt.loadNpmTasks('grunt-mocha');
+
+  var serverInfo = null;
+
+  grunt.registerTask('server-start', 'Start server', function() {
+    var done = this.async();
+    SERVER.main({
+      test: true
+    }, function(err, info) {
+        if (err) throw err;
+        serverInfo = info;
+        done();
+    });
+  });
+
+  grunt.registerTask('server-stop', 'Stop server', function() {
+    var done = this.async();
+    return serverInfo.server.close(function() {
+        return done();
+    });
+  });
+
+  // Load all grunt related npm packages.
+  for (var alias in grunt.file.readJSON('package.json').devDependencies) {
+    if (/^grunt.+$/.test(alias)) grunt.loadNpmTasks(alias);
+  }
 
 //  grunt.registerTask('test', ['mocha']);
+  grunt.registerTask('test', ['server-start', 'saucelabs-mocha', 'server-stop']);
   grunt.registerTask('default', ['jshint']);
   grunt.registerTask('dist', ['requirejs']);
 

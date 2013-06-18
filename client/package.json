@@ -6,6 +6,13 @@
     "devDependencies": {
         "grunt": "~0.4.1",
         "grunt-contrib-jshint": "~0.6.0",
-        "grunt-requirejs": "~0.3.5"
-    }
+        "grunt-requirejs": "~0.3.5",
+		"grunt-cli": "~0.1.9",
+	    "grunt-saucelabs": "~4.0.4",
+	    "mocha": "~1.11.0",
+        "chai": "~1.5.0"
+    },
+	"scripts": {
+		"test": "grunt test"
+	}
 }

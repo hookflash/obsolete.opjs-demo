@@ -25,7 +25,7 @@ const PORT = 8080;
 const LIVE_DEBUG = true;
 
 
-exports.main = function(callback) {
+exports.main = function(options, callback) {
     try {
 
         var mode = "dev";
@@ -224,10 +224,61 @@ exports.main = function(callback) {
                         app.get(/^\/scripts\/require-config\.js$/, function(req, res, next) {
                             var body = FS.readFileSync(PATH.join(__dirname, "../client/public/scripts/require-config.js")).toString();
                             for (var name in config.options) {
-                                body = body.replace(new RegExp("%" + name + "%", "g"), config.options[name]);
+                                var value = config.options[name];
+                                if (options.test) {
+                                    if (name === "REQUIREJS_MAIN_MODULE") {
+                                        value += "', 'tests/_all";
+                                    }
+                                }
+                                body = body.replace(new RegExp("%" + name + "%", "g"), value);
                             }
                             res.writeHeader(200, {
                                 "Content-Type": "application/javascript",
+                                "Content-Length": body.length
+                            });
+                            res.end(body);
+                        });
+
+                        if (options.test) {
+                            mountStaticDir(app, /^\/lib\/chai\/(.*)$/, PATH.join(__dirname, "../client/node_modules/chai"));
+                            mountStaticDir(app, /^\/lib\/mocha\/(.*)$/, PATH.join(__dirname, "../client/node_modules/mocha"));
+                            app.get(/^\/tests\/_all\.js$/, function(req, res, next) {
+                                body = [
+                                    'define(function() {',
+                                        'mocha.setup("tdd");',
+                                        'window.EXPECT = chai.expect;',
+                                        'window.ASSERT = chai.assert;',
+                                        'require([',
+                                            '"tests/HelloWorld"',
+                                        '], function() {',
+                                            'mocha.run();',
+                                        '});',
+                                    '});'
+                                ].join("\n");
+                                res.writeHeader(200, {
+                                    "Content-Type": "text/html",
+                                    "Content-Length": body.length
+                                });
+                                res.end(body);
+                            });
+                            mountStaticDir(app, /^\/tests\/(.*)$/, PATH.join(__dirname, "../client/tests"));
+                        }
+                        app.get(/^\/(index.html)?$/, function(req, res, next) {
+                            var body = FS.readFileSync(PATH.join(__dirname, "../client/public/index.html")).toString();
+                            if (options.test) {
+                                body = body.replace(/%TEST_HEAD%/g, [
+                                    '<script src="/lib/chai/chai.js"></script>',
+                                    '<script src="/lib/mocha/mocha.js"></script>',
+                                    '<link rel="stylesheet" href="/lib/mocha/mocha.css">',
+                                    '<link href="styles/test.css" rel="stylesheet" type="text/css"></link>'
+                                ].join("\n"));
+                                body = body.replace(/%TEST_BODY%/g, [
+                                    '<div id="mocha"></div>'
+                                ].join("\n"));
+                            }
+                            body = body.replace(/%[^%]+%/g, "");
+                            res.writeHeader(200, {
+                                "Content-Type": "text/html",
                                 "Content-Length": body.length
                             });
                             res.end(body);
@@ -289,7 +340,7 @@ function mountStaticDir(app, route, path, options) {
 
 
 if (require.main === module) {
-    exports.main(function(err) {
+    exports.main({}, function(err) {
         if (err) {
             console.error(err.stack);
             process.exit(1);
