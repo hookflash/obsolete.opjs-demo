@@ -10,7 +10,8 @@
 		"grunt-cli": "~0.1.9",
 	    "grunt-saucelabs": "~4.0.4",
 	    "mocha": "~1.11.0",
-        "chai": "~1.5.0"
+        "chai": "~1.5.0",
+        "node-browserstack": "git://github.com/ably-forks/node-browserstack#c29160666504f5d91c1dedaa33e7d04b1dc8516a"        
     },
 	"scripts": {
 		"test": "grunt test"
