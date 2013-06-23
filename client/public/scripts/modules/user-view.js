@@ -31,8 +31,6 @@ define(['text!templates/user.html', 'text!templates/user-line.html', 'backbone',
             }
         });
 
-
-
         var UserView = Backbone.Layout.extend({
             className: 'user-view',
             template: _.template(userHtml),
@@ -70,7 +68,6 @@ define(['text!templates/user.html', 'text!templates/user-line.html', 'backbone',
                     self.$el.find('.login-form a[data-provider="'+ model.get('provider') +'"]').hide();
                 });
 
-//                console.log(this.$el.find('.login-form a[data-provider]'));
                 if(this.collection.length === this.$el.find('.login-form a[data-provider]').length) this.$el.find('.loginForm').hide();
             },
             requestAuth: function(event) {

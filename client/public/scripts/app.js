@@ -223,10 +223,14 @@ define([
                 var deferred = Q.defer();
 
                 rolodex.getContacts(null, {peerContact: /^peer:.*/}).then(function(contacts) {
-                    var records = [];
+                    var records = [], peers = [];
+
                     for(var i in contacts){
                         for(var j in contacts[i]){
-                            records.push(contacts[i][j]);
+                            if(!~peers.indexOf(contacts[i][j].peerContact)){
+                                records.push(contacts[i][j]);
+                                peers.push(contacts[i][j].peerContact);
+                            }
                         }
                     }
                     records = util.sortRecords(records);
@@ -292,14 +296,12 @@ define([
     });
 
     rolodexPresnece.on("contact.online", function(peerContact) {
-        console.log(peerContact)
         if(isRendered){
             layout.trigger('contact.online', peerContact, 'online');
         }
     });
 
     rolodexPresnece.on("contact.offline", function(peerContact) {
-        console.log(peerContact)
         if(isRendered){
             layout.trigger('contact.online', peerContact, 'offline');
         }
