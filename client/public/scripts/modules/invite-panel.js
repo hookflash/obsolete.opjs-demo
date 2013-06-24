@@ -8,7 +8,8 @@ define(['text!templates/invite-panel.html', 'text!templates/invite-panel-item.ht
                 'click a.invite': 'invite',
                 'click a.sand': 'sendMail',
                 'click a.cancel': 'cancelInvite',
-                'click a.sync': 'syncContacts'
+                'click a.sync': 'syncContacts',
+                'click h3 .tab': 'toggleHeader'
             },
             initialize: function(options){
                 this.contacts = options.contacts || {};
@@ -91,6 +92,9 @@ define(['text!templates/invite-panel.html', 'text!templates/invite-panel-item.ht
                 this.clearSearchResult();
 
                 var sourceElement = this.$el.find('.contact-holder').find('li[rel="'+ rel +'"]');
+
+                $(sourceElement).parents('ul').is(':hidden') && $(sourceElement).parents('ul').parent().find('h3 .tab').trigger('click');
+
                 $('.invite-panel .contact-holder').animate({scrollTop: sourceElement.position().top}, 100);
                 sourceElement.find('.invite').trigger('click');
             },
@@ -130,6 +134,11 @@ define(['text!templates/invite-panel.html', 'text!templates/invite-panel-item.ht
                     }).appendTo(this.$('div[rel="'+ contact['service'] +'"] ul'));
 
                 }
+            },
+            toggleHeader: function(e){
+                var el = ($(e.target).is('h3') ? $(e.target)[0] : $(e.target).parents('h3')[0]);
+                $(el).parent().find('ul').toggle();
+                $(el).find('.icon-collapse-dark').toggleClass('collapsed');
             }
         });
 

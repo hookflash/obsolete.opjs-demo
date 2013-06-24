@@ -607,7 +607,6 @@ a.logo {
 }
 .contacts-cont .search-results li .name,
 .contacts-list li .name {
-  padding-top: 5px;
   padding-left: 5px;
   width: 75%;
 }
@@ -904,10 +903,10 @@ ul.login-form li a{
 }
 .invite-panel .search-output .search-results .link.inner-box{display: none !important;}
 .invite-panel .contacts{
-    margin-top: 30px;
+    /*margin-top: 30px;*/
 }
 .invite-panel .contacts>div{
-    margin-top: -28px;
+    /*margin-top: -28px;*/
 }
 .invite-panel .contacts-list{
     border-top: 1px solid rgba(0,0,0,0.1);
@@ -939,11 +938,17 @@ ul.login-form li a{
 .invite-panel .contacts h3 span.tab{
     position: relative;
     display: inline-block;
-    padding: 5px 10px;
+    padding: 5px 10px 10px 20px;
+    font-size: 14px;
+    color: #E0E0E0;
     border-radius: 3px;
     box-shadow: 0px 0px 8px rgba(0,0,0, 0.7);
     z-index: 2;
     background-color: rgba(70,70,70,1);
+    background-repeat: no-repeat;
+    background-position: 4px 6px;
+    cursor: pointer;
+
 }
 
 .invite-panel .contacts li.contact{
@@ -956,6 +961,11 @@ ul.login-form li a{
 }
 .invite-panel .contacts span{
     display: inline-block;
+}
+.invite-panel .contacts li.contact>span.link{
+  position: absolute;
+  top: 8px;
+  right: 5px;
 }
 .invite-panel .contacts-list li .name{width: 123px}
 .email-form{
