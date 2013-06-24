@@ -42,8 +42,6 @@ define(['text!templates/user.html', 'text!templates/user-line.html', 'backbone',
             initialize: function(options){
                 this.collection = options.collection;
                 service = options.service;
-
-                console.log(this.collection);
             },
             serialize: function() {
                 return this.collection.at(0).toJSON();

@@ -92,6 +92,9 @@ define(['text!templates/invite-panel.html', 'text!templates/invite-panel-item.ht
                 this.clearSearchResult();
 
                 var sourceElement = this.$el.find('.contact-holder').find('li[rel="'+ rel +'"]');
+
+                $(sourceElement).parents('ul').is(':hidden') && $(sourceElement).parents('ul').parent().find('h3 .tab').trigger('click');
+
                 $('.invite-panel .contact-holder').animate({scrollTop: sourceElement.position().top}, 100);
                 sourceElement.find('.invite').trigger('click');
             },
