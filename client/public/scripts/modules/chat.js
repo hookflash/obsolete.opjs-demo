@@ -56,6 +56,8 @@ define(['text!templates/chat-layout.html', 'text!templates/chat-message-line.htm
                 this.trigger('chat-message', this.model.collection.providerUser.get('peerContact'), this.model, message);
 
                 this.renderMessage(message);
+
+                this.$el.find('textarea[name="chat-text"]').val("")
             },
             hide: function(isVideo){
                 this.$el.hide();
@@ -97,8 +99,6 @@ define(['text!templates/chat-layout.html', 'text!templates/chat-message-line.htm
                 this.$el.find('.conversation-chat-dialog').append(_.template(chatMessageLine, message));
 
                 this.$el.find('.conversation-chat-dialog')[0].scrollTop = this.$el.find('.conversation-chat-dialog').get(0).scrollHeight;
-                this.$el.find('textarea[name="chat-text"]').val("")
-
             },
             close: function(){
                 this.remove();

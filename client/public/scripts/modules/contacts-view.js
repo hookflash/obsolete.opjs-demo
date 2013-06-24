@@ -8,8 +8,7 @@ define(['text!templates/contacts-list.html',
         var ContactsGroup = Backbone.Layout.extend({
             template: _.template(contactGroupHtml),
             events: {
-                'click h3': 'toggleHeader',
-                'click a.sync': 'sync'
+                'click h3': 'toggleHeader'
             },
             initialize: function(options) {
                 this.collection.on('add', this.onRecordAdded.bind(this));
@@ -78,11 +77,6 @@ define(['text!templates/contacts-list.html',
 
                 $('.active-contacts .contacts-list').prepend(view.$el);
             },
-            sync: function(e){
-//                e.preventDefault();
-//                this.$el.find('a.sync span').addClass('preloader');
-//                this.trigger('contacts.refetching', this.provider);
-            },
             onContactRefetched: function(){
                 this.$el.find('a.sync span').removeClass('preloader');
             }
@@ -97,7 +91,7 @@ define(['text!templates/contacts-list.html',
             initialize: function() {
 
             },
-            setContacts: function(collection, status){
+            setContacts: function(collection){
                 for(var i in collection){
                     var contactsGroupView = new ContactsGroup({
                         collection: collection[i],

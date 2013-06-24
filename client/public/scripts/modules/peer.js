@@ -209,7 +209,6 @@ define([
     var Peers = Peer.Peers = Backbone.Collection.extend({
         model: Peer,
         initialize: function(models, options) {
-//            this.records = models;
             if (options) {
                 if (options.transport) this.transport = options.transport;
                 if(options.providerUser) this.providerUser = options.providerUser;
