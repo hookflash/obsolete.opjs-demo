@@ -223,16 +223,22 @@ define([
                 var deferred = Q.defer();
 
                 rolodex.getContacts(null, {peerContact: /^peer:.*/}).then(function(contacts) {
-                    var records = [], peers = [];
+                    var records = [];
 
                     for(var i in contacts){
                         for(var j in contacts[i]){
-                            if(!~peers.indexOf(contacts[i][j].peerContact)){
-                                records.push(contacts[i][j]);
-                                peers.push(contacts[i][j].peerContact);
-                            }
+                              var exists = _.find(records, function(el){
+                                  return el.peerContact === contacts[i][j].peerContact;
+                              });
+                              if(exists){
+                                  exists['snLogos'] && exists['snLogos'].push(contacts[i][j]['service']);
+                              } else {
+                                  contacts[i][j]['snLogos'] = [contacts[i][j]['service']];
+                                  records.push(contacts[i][j]);
+                              }
                         }
                     }
+
                     records = util.sortRecords(records);
 
                     var fullListOfcontacts = {
