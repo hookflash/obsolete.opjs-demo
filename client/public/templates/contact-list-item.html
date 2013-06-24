@@ -3,6 +3,22 @@
 <span class="inner-box raunded light">
     <span class="avatar" style="background-image: url(<%= photo ? photo : 'MASDFDF.png' %>)"></span>
 </span>
-<span class="name"><%= fn %></span>
+<span class="name">
+    <%= fn %>
+    <span class="sn-logos">
+        <% if (snLogos) {
+            _.each(snLogos, function(logo){
+        %>
+        <span class="<%= logo %>"></span>
+        <%
+            });
+        }%>
+    </span>
+</span>
 
 <span class="new-messages" style="display: none"></span>
+
+
+<!--<span class="facebook"></span>-->
+<!--<span class="github"></span>-->
+<!--<span class="twitter"></span>-->

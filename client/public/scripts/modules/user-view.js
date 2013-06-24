@@ -31,11 +31,10 @@ define(['text!templates/user.html', 'text!templates/user-line.html', 'backbone',
             }
         });
 
-
-
         var UserView = Backbone.Layout.extend({
             className: 'user-view',
             template: _.template(userHtml),
+            status: null,
             events: {
                 'click a.settings': 'openSettings',
                 'click a[data-provider]': 'requestAuth'
@@ -53,6 +52,7 @@ define(['text!templates/user.html', 'text!templates/user-line.html', 'backbone',
                 el.attr('class', 'user-status');
                 if(status !== 'offline'){
                     el.addClass(status);
+                    this.status = status;
                 }
             },
             afterRender: function(){
@@ -65,12 +65,12 @@ define(['text!templates/user.html', 'text!templates/user-line.html', 'backbone',
                     line.on('logout', function(){
                         self.collection.remove(line.model);
                         self.render();
+                        if(self.status) self.setStatus(self.status);
                     });
 
                     self.$el.find('.login-form a[data-provider="'+ model.get('provider') +'"]').hide();
                 });
 
-//                console.log(this.$el.find('.login-form a[data-provider]'));
                 if(this.collection.length === this.$el.find('.login-form a[data-provider]').length) this.$el.find('.loginForm').hide();
             },
             requestAuth: function(event) {

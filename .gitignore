@@ -3,3 +3,4 @@ npm-debug.log
 /client/public/scripts/dist/
 config.local.json
 config.json
+*idea*
