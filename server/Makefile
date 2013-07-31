@@ -4,6 +4,8 @@ postinstall:
 	@if [ -d "/opt/node/app" ]; then $(MAKE) postinstall-dotcloud; fi
 	cd bootstrapper; npm install --production
 	cd node_modules/openpeer; npm install
+	cd node_modules/openpeer-rolodex; npm install --production
+	cd node_modules/openpeer-rolodex-presence; npm install --production
 	cd node_modules/openpeer/dev/helpers/finder-server; npm install --production
 
 postinstall-dotcloud:

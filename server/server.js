@@ -20,7 +20,7 @@ const LOCKBOX_SERVER = require("./lockbox/server");
 const FINDER_SERVER = require("openpeer/dev/helpers/finder-server/server");
 
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 const LIVE_DEBUG = true;
 

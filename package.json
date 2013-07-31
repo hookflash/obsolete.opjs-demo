@@ -10,5 +10,10 @@
     "pm": "npm",
     "scripts": {
     	"install": "make install"
+    },
+    "config": {
+        "run": {
+            "packagePath": "server"
+        }
     }
 }
