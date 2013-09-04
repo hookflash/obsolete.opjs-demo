@@ -10,8 +10,9 @@ define([
     'modules/layout',
     'modules/incoming-call',
     'modules/_transport',
-    'rolodex/q'
-], function(CONFIG, Login, $, ROLODEX, ROLODEX_PRESENCE, util, Peer, UserView, Layout, IncomingCall, Transport, Q) {
+    'rolodex/q',
+    'opjs/OpenPeer'
+], function(CONFIG, Login, $, ROLODEX, ROLODEX_PRESENCE, util, Peer, UserView, Layout, IncomingCall, Transport, Q, OpenPeer) {
 
     var rolodex = new ROLODEX({
         baseURL: CONFIG.ROLODEX_BASE_URL
@@ -152,6 +153,9 @@ define([
     var Collection = Peer.Collection;
 
     rolodex.on("fetched.services", function(services) {
+
+        //loadOpenPeer(services);
+
         if(!isLoggedIn){
             var loggedServices = [],
                 servicesIsFetching = [];
@@ -180,7 +184,8 @@ define([
         }
     });
 
-    function app(){
+    function app() {
+
         rolodex.getServices().then(function(services){
             var serviceCollection = new Collection(null, { transport: transport });
 
@@ -362,4 +367,55 @@ define([
         ErrorView.$el.appendTo('body');
         ErrorView.setStatus({error: "More recent login at another location. Reload page to login again."});
     });
+
+
+    // ###############################################################
+    // #  Proper OpenPeer Integration.
+    // ###############################################################
+
+    var op = null;
+
+    function loadOpenPeer(services) {
+        var identities = [];
+        for (var serviceID in services) {
+            if(services[serviceID].loggedin) {
+                identities.push("identity://" + serviceID + ".com/");
+            }
+        }
+console.error("identities", identities);
+        if (op) {
+            if (identities.length === 0) {
+                op = null;
+                op.destroy();
+            }
+            return;
+        }
+        function loginIdentity(identity) {
+            if (!op) {
+                op = new OpenPeer({
+                    _logPrefix: "OpenPeer",
+                    identityDomain: "idprovider-javascript.hookflash.me"
+                });
+                op.on("contacts.loaded", function(identity) {
+
+console.error("identity", identity);
+
+                    op.getContacts().then(function(contacts) {
+
+console.error("CONTACTS", contacts);
+                    });
+                });
+            }
+            op.ready().then(function() {
+
+console.error("ADD IDENTITY");
+
+                return op.addIdentity(identity);
+
+            }).fail(function(err) {
+                console.error("OP ERROR", err.stack);
+            });
+        }
+        identities.forEach(loginIdentity);
+    }
 });

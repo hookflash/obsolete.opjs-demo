@@ -205,7 +205,8 @@ exports.main = function(callback) {
                     }, function(err, presenceServer) {
                         if (err) return callback(err);
 
-                        mountStaticDir(app, /^\/lib\/openpeer\/(.*)$/, PATH.join(__dirname, "node_modules/openpeer/lib"));
+                        mountStaticDir(app, /^\/lib\/opjs\/(.*)$/, PATH.join(__dirname, "node_modules/openpeer/lib"));
+                        mountStaticDir(app, /^\/lib\/ortc\/(.*)$/, PATH.join(__dirname, "node_modules/openpeer/node_modules/ortc"));
                         mountStaticDir(app, /^\/lib\/cifre\/(.*)$/, PATH.join(__dirname, "node_modules/openpeer/node_modules/cifre"));
                         mountStaticDir(app, /^\/lib\/q\/(.*)$/, PATH.join(__dirname, "node_modules/openpeer-rolodex/node_modules/q"));
 

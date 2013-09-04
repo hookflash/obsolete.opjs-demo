@@ -9,7 +9,11 @@ require.config({
         templates: '../templates',
         db: 'lib/ydn.db',
         rolodex: "%ROLODEX_BASE_URL%/.openpeer-rolodex/client",
-        "rolodex-presence": "%ROLODEX_BASE_URL%/.openpeer-rolodex-presence/client"
+        "rolodex-presence": "%ROLODEX_BASE_URL%/.openpeer-rolodex-presence/client",
+        opjs: '/lib/opjs',
+        ortc: "/lib/ortc",
+        cifre: "/lib/cifre",
+        q: "/lib/q"
     },
     shim: {
         transport: {

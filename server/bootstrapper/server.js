@@ -6,139 +6,198 @@ const SERVICE = require("../node_modules/openpeer/dev/helpers/service");
 
 exports.hook = function(app, config, options) {
 
-	// Proxy the bootstrapping request and modify it to fit our needs.
-	app.post(/^\/\.well-known\/openpeer-services-get$/, function(req, res, next) {
+	var responder = SERVICE.responder(options, function(request, options, callback) {
 
-		return REQUEST({
-			method: "POST",
-			url: "https://" + config.options.REAL_IDENTITY_HOST + "/.well-known/openpeer-services-get",
-			body: JSON.stringify(req.body),
-			headers: {
-				"Content-Type": "application/json"
-			}
-		}, function (err, response, body) {
-			if (err) return next(err);
-			if (response.statusCode !== 200) {
-				res.writeHead(response.statusCode);
-				return res.end(body || "");
-			}
+		if (request.$handler === "bootstrapper" && request.$method === "services-get-dev") {
 
-			try {
+	        request.$domain = config.options.REAL_IDENTITY_HOST;
+	        request.$method = "services-get";
 
-				var data = JSON.parse(body);
+			var url = "https://" + config.options.REAL_IDENTITY_HOST + "/.well-known/openpeer-services-get";
 
-				ASSERT(typeof data.result === "object");
-				ASSERT(typeof data.result.services === "object");
-				ASSERT(typeof data.result.services.service === "object");
-
-				for (var i=0 ; i<data.result.services.service.length ; i++) {
-
-					var service = data.result.services.service[i];
-
-                    if (service.type === "identity-lockbox") {
-                        data.result.services.service = data.result.services.service.splice(i, 1);
-                        i--;
-                        continue;
-                    }
-
-                    if (!Array.isArray(service.methods.method)) {
-                        service.methods.method = [ service.methods.method ];
-                    }
-                    service.methods.method = service.methods.method.map(function(method) {
-                        if (
-//                            method.name === "finders-get" ||
-                            method.name === "signed-salt-get" ||
-                            method.name === "certificates-get"
-                        ) {
-                            return method;
-                        }
-                        method.uri = "http://" + req.headers.host + "/.helpers/" + method.name;
-                        return method;
-                    });
-
-					if (service.type === "bootstrapped-finders") {
-						service.methods.method = service.methods.method.filter(function(method) {
-							if (method.name === "finders-get") return false;
-							return true;
-						});
-						service.methods.method.push({
-							name: "finders-get",
-							uri: "http://" + req.headers.host + "/.op/bootstrapped-finders/finders-get"
-						});
-					} else
-					if (service.type === "identity") {
-						service.methods.method.push({
-							name: "identity-access-start",
-							uri: "http://" + req.headers.host + "/.op/identity/identity-access-start"
-						});
-						service.methods.method = service.methods.method.filter(function(method) {
-							if (method.name === "identity-lookup-update") return false;
-							if (method.name === "identity-access-lockbox-update") return false;
-							return true;
-						});
-						service.methods.method.push({
-							name: "identity-lookup-update",
-							uri: "http://" + req.headers.host + "/.op/identity/identity-lookup-update"
-						});
-						service.methods.method.push({
-							name: "identity-access-lockbox-update",
-							uri: "http://" + req.headers.host + "/.op/identity/identity-access-lockbox-update"
-						});						
-					} else
-					if (service.type === "identity-lookup") {
-						if (!Array.isArray(service.methods.method)) {
-							service.methods.method = [ service.methods.method ];
-						}
-						service.methods.method = service.methods.method.filter(function(method) {
-							if (method.name === "identity-lookup") return false;
-							return true;
-						});
-						service.methods.method.push({
-							name: "identity-lookup",
-							uri: "http://" + req.headers.host + "/.op/identity-lookup/identity-lookup"
-						});
-					}
+	        function handleResult(err, response, body) {
+				if (err) {
+					console.error("Error connecting to URL:", url);
+					console.error(err.stack);
+					return callback(err);
 				}
 
-                data.result.services.service.push({
-                    type: "identity-lockbox",
-                    methods: {
-                        method: [
-                            {
-                                name: "lockbox-access",
-                                uri: "http://" + req.headers.host + "/.op/lockbox/lockbox-access"
-                            },
-                            {
-                                name: "lockbox-identities-update",
-                                uri: "http://" + req.headers.host + "/.op/lockbox/lockbox-identities-update"
-                            },
-                            {
-                                name: "lockbox-content-set",
-                                uri: "http://" + req.headers.host + "/.op/lockbox/lockbox-content-set"
-                            },
-                            {
-                                name: "lockbox-content-get",
-                                uri: "http://" + req.headers.host + "/.op/lockbox/lockbox-content-get"
-                            }                            
-                        ]
-                    }
-                });
+				if (response.statusCode !== 200) {
+					console.error("Error connecting to URL:", url);
+					return callback(new Error("Got status: " + response.statusCode));
+				}
 
-				var data = JSON.stringify(data);
-				res.writeHead(200, {
-					"Content-Type": "application/json",
-					"Content-Length": data.length
-				});
-				return res.end(data);
+				try {
 
-			} catch(err) {
-				return next(err);
+					var data = JSON.parse(body);
+
+					ASSERT(typeof data.result === "object");
+
+	                if (data.result.error) {
+
+	                    if (data.result.error['$id'] === 302) {
+
+	                        url = data.result.error['location'];
+
+	                        return REQUEST({
+	                            method: "POST",
+	                            url: url,
+	                            body: JSON.stringify({
+	                                request: request
+	                            }),
+	                            headers: {
+	                                "Content-Type": "application/json"
+	                            },
+                	            rejectUnauthorized: false
+	                        }, handleResult);
+
+	                    } else {
+	                        return callback(new Error("Got error over openpeer wire: " + JSON.stringify(data.result.error)));
+	                    }
+	                }
+
+					ASSERT(typeof data.result.services === "object");
+					ASSERT(typeof data.result.services.service === "object");
+
+					for (var i=0 ; i<data.result.services.service.length ; i++) {
+
+						var service = data.result.services.service[i];
+
+	                    if (service.type === "identity-lockbox") {
+	                        data.result.services.service.splice(i, 1);
+	                        i--;
+	                        continue;
+	                    }
+
+	                    if (!Array.isArray(service.methods.method)) {
+	                        service.methods.method = [ service.methods.method ];
+	                    }
+	                    service.methods.method = service.methods.method.map(function(method) {
+	                        if (
+	//                            method.name === "finders-get" ||
+	                            method.name === "signed-salt-get" ||
+	                            method.name === "certificates-get"
+	                        ) {
+	                            return method;
+	                        }
+	                        method.uri = "http://" + request.req.headers.host + "/.helpers/" + method.name;
+	                        return method;
+	                    });
+
+						if (service.type === "bootstrapped-finders") {
+							service.methods.method = service.methods.method.filter(function(method) {
+								if (method.name === "finders-get") return false;
+								return true;
+							});
+							service.methods.method.push({
+								name: "finders-get",
+								uri: "http://" + request.req.headers.host + "/.op/bootstrapped-finders/finders-get"
+							});
+						} else
+						if (service.type === "identity") {
+							service.methods.method = service.methods.method.filter(function(method) {
+								if (method.name === "identity-access-inner-frame") return false;
+								if (method.name === "identity-lookup-update") return false;
+								if (method.name === "identity-access-lockbox-update") return false;
+								if (method.name === "identity-access-rolodex-credentials-get") return false;
+								return true;
+							});
+							service.methods.method.push({
+								name: "identity-access-inner-frame",
+								uri: "http://" + request.req.headers.host + "/.op/identity/identity-access-inner-frame"
+							});
+							service.methods.method.push({
+								name: "identity-lookup-update",
+								uri: "http://" + request.req.headers.host + "/.op/identity/identity-lookup-update"
+							});
+							service.methods.method.push({
+								name: "identity-access-lockbox-update",
+								uri: "http://" + request.req.headers.host + "/.op/identity/identity-access-lockbox-update"
+							});
+							service.methods.method.push({
+								name: "identity-access-rolodex-credentials-get",
+								uri: config.options.ROLODEX_BASE_URL + "/.openpeer-rolodex/identity-access-rolodex-credentials-get"
+							});
+						} else
+						if (service.type === "identity-lookup") {
+							if (!Array.isArray(service.methods.method)) {
+								service.methods.method = [ service.methods.method ];
+							}
+							service.methods.method = service.methods.method.filter(function(method) {
+								if (method.name === "identity-lookup") return false;
+								return true;
+							});
+							service.methods.method.push({
+								name: "identity-lookup",
+								uri: "http://" + request.req.headers.host + "/.op/identity-lookup/identity-lookup"
+							});
+						}
+					}
+
+	                data.result.services.service.push({
+	                    type: "identity-lockbox",
+	                    methods: {
+	                        method: [
+	                            {
+	                                name: "lockbox-access",
+	                                uri: "http://" + request.req.headers.host + "/.op/lockbox/lockbox-access"
+	                            },
+	                            {
+	                                name: "lockbox-identities-update",
+	                                uri: "http://" + request.req.headers.host + "/.op/lockbox/lockbox-identities-update"
+	                            },
+	                            {
+	                                name: "lockbox-content-set",
+	                                uri: "http://" + request.req.headers.host + "/.op/lockbox/lockbox-content-set"
+	                            },
+	                            {
+	                                name: "lockbox-content-get",
+	                                uri: "http://" + request.req.headers.host + "/.op/lockbox/lockbox-content-get"
+	                            }                            
+	                        ]
+	                    }
+	                });
+
+	                data.result.services.service.push({
+	                    type: "rolodex",
+	                    methods: {
+	                        method: [
+	                            {
+	                                name: "rolodex-access",
+	                                uri: config.options.ROLODEX_BASE_URL + "/rolodex-access"
+	                            },
+	                            {
+	                                name: "rolodex-namespace-grant-challenge-validate",
+	                                uri: config.options.ROLODEX_BASE_URL + "/rolodex-namespace-grant-challenge-validate"
+	                            },
+	                            {
+	                                name: "rolodex-contacts-get",
+	                                uri: config.options.ROLODEX_BASE_URL + "/rolodex-contacts-get"
+	                            }
+	                        ]
+	                    }
+	                });
+
+					return callback(null, data.result);
+
+				} catch(err) {
+					return callback(err);
+				}
 			}
-		});
 
-	});
+	        return REQUEST({
+	            method: "POST",
+	            url: url,
+	            body: JSON.stringify({
+	                request: request
+	            }),
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            rejectUnauthorized: false
+	        }, handleResult);
 
-	var responder = SERVICE.responder(options, function(request, options, callback) {
+		} else
 		if (request.$handler === "bootstrapped-finders" && request.$method === "finders-get") {
 			return callback(null, SERVICE.nestResponse(["finders", "finderBundle"], {
 	            "finder": {
@@ -173,6 +232,9 @@ exports.hook = function(app, config, options) {
 			}));
 		}
 	});
+
+	// Proxy the bootstrapping request and modify it to fit our needs.
+	app.post(/^\/\.well-known\/openpeer-services-get$/, responder);
 
 	app.post(/^\/\.op\/bootstrapped-finders\/finders-get$/, responder);
 }

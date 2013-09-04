@@ -6,7 +6,7 @@ const OPJS_UTIL = require("../node_modules/openpeer/lib/util");
 const CRYPTO = require("../node_modules/openpeer/lib/crypto");
 
 
-var DB_KEY_NS = 1;
+var DB_KEY_NS = 2;
 
 exports.hook = function(app, config, options, callback) {
 
@@ -74,7 +74,7 @@ exports.hook = function(app, config, options, callback) {
 			if (request.$handler === "lockbox" && request.$method === "lockbox-identities-update") {
 				return callback(null, {
 			        "identities": {
-			            "identity": Util.arrayForPayloadObject(request.identities.identity).map(function(identity) {
+			            "identity": OPJS_UTIL.arrayForPayloadObject(request.identities.identity).map(function(identity) {
 			                return {
 			                    "uri": identity.uri,
 			                    "provider": identity.provider
