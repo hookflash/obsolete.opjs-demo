@@ -55,7 +55,7 @@ module.exports = function(grunt) {
             "rolodex-presence": "empty:"
           },
           almond: false,
-          mainConfigFile: "public/scripts/require-config.js",
+          mainConfigFile: "public/scripts/require-config.dist.js",
           deps: [],
 //          optimize: "none",
           preserveLicenseComments: false,
