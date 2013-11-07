@@ -25,6 +25,12 @@ const PORT = process.env.PORT || 8080;
 const LIVE_DEBUG = true;
 
 
+var serviceUid = false;
+if (FS.existsSync(PATH.join(__dirname, "../service.json"))) {
+    serviceUid = JSON.parse(FS.readFileSync(PATH.join(__dirname, "../service.json"))).uid;
+}
+
+
 exports.main = function(callback) {
     try {
 
@@ -102,6 +108,9 @@ exports.main = function(callback) {
         var app = EXPRESS();
 
         app.use(function(req, res, next) {
+            if (serviceUid) {
+                res.setHeader("x-service-uid", serviceUid);
+            }
             if (req.headers.origin) {
                 var origin = null;
                 if (config.rolodex.allow && config.rolodex.allow.hosts) {
