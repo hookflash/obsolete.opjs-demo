@@ -1,3 +1,7 @@
+
+const PATH = require("path");
+
+
 module.exports = function(grunt) {
 
   'use strict';
@@ -52,7 +56,11 @@ module.exports = function(grunt) {
         options: {
           paths: {
             "rolodex": "empty:",
-            "rolodex-presence": "empty:"
+            "rolodex-presence": "empty:",
+            opjs: PATH.join(__dirname, '../server/node_modules/openpeer/lib'),
+            ortc: PATH.join(__dirname, '../server/node_modules/openpeer/node_modules/ortc'),
+            cifre: "empty:", //PATH.join(__dirname, '../server/node_modules/openpeer/node_modules/cifre'),
+            q: PATH.join(__dirname, '../server/node_modules/openpeer-rolodex/node_modules/q')
           },
           almond: false,
           mainConfigFile: "public/scripts/require-config.js",
