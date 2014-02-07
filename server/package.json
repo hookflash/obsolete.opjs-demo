@@ -11,7 +11,7 @@
         "fs-extra": "~0.6.0",
         "express": "~3.2.0",
         "connect-redis": "~1.4.5",
-        "openpeer-rolodex": "~0.1.8",
+        "openpeer-rolodex": "~0.1.9",
         "openpeer-rolodex-presence": "~0.1.2",
         "winston": "~0.7.1",
         "winston-papertrail": "~0.1.2",

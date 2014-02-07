@@ -25,9 +25,11 @@ const PORT = process.env.PORT || 8080;
 const LIVE_DEBUG = true;
 
 
+var serviceConfig = null;
 var serviceUid = false;
 if (FS.existsSync(PATH.join(__dirname, "../service.json"))) {
-    serviceUid = JSON.parse(FS.readFileSync(PATH.join(__dirname, "../service.json"))).uid;
+    serviceConfig = JSON.parse(FS.readFileSync(PATH.join(__dirname, "../service.json")));
+    serviceUid = serviceConfig.uid;
 }
 
 
@@ -35,20 +37,18 @@ exports.main = function(callback) {
     try {
 
         var mode = "dev";
-        var hostname = "localhost";
 
         if (!FS.existsSync(PATH.join(__dirname, "../.git"))) {
             mode = "live";
-            hostname = "webrtc.hookflash.me";
         }
 
         var config = JSON.parse(FS.readFileSync(PATH.join(__dirname, "../config" + ((mode==="dev")?".local":"") + ".json")));
 
-        if (mode === "live") {
-            config.options.REQUIREJS_MAIN_MODULE = "dist/app";
-        } else {
+        //if (mode === "live") {
+        //    config.options.REQUIREJS_MAIN_MODULE = "dist/app";
+        //} else {
             config.options.REQUIREJS_MAIN_MODULE = "app";
-        }
+        //}
 
         function initLogger() {
             var transports = [
